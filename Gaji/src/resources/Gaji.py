@@ -31,3 +31,38 @@ class GajiResource(Resource):
 
         result = gajis_schema.dump(gaji).data
         return {"status": 'success', 'data': result}, 201
+
+    def put(self):
+        json_data = request.get_json(force=True)
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        # Validate and deserialize input
+        data, errors = gaji_schema.load(json_data)
+        if errors:
+            return errors, 422
+        gaji = Gaji.query.filter_by(id=data['id']).first()
+        if not Gaji:
+            return {'message': 'Category does not exist'}, 400
+        gaji.name = data['name']
+        gaji.gaji = data['gaji']
+        db.session.commit()
+
+        result = gaji_schema.dump(gaji).data
+
+        return {"status": 'success', 'data': result}, 204
+
+    def delete(self):
+        json_data = request.get_json(force=True)
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+
+        data, errors = gaji_schema.load(json_data)
+        if errors:
+            return errors, 422
+
+        gaji = Gaji.query.filter_by(id=data['id']).delete()
+        db.session.commit()
+
+        result = gaji_schema.dump(gaji).data
+
+        return {"status": 'success', 'data': result}, 204
