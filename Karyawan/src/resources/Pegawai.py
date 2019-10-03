@@ -20,7 +20,7 @@ class PegawaiResource(Resource):
             return errors, 422
         pegawai = Pegawai.query.filter_by(name=data['name']).first()
         if pegawai:
-            return {'message': 'pegawai already exists'}, 400
+            return {'message': 'Pegawai already exists'}, 400
         pegawai = Pegawai(
             name=json_data['name'],
             alamat=json_data['alamat']
@@ -56,10 +56,11 @@ class PegawaiResource(Resource):
         json_data = request.get_json(force=True)
         if not json_data:
             return {'message': 'No input data provided'}, 400
-        # Validate and deserialize input
+
         data, errors = pegawai_schema.load(json_data)
         if errors:
             return errors, 422
+
         pegawai = Pegawai.query.filter_by(id=data['id']).delete()
         db.session.commit()
 

@@ -30,5 +30,4 @@ class GajiResource(Resource):
         db.session.commit()
 
         result = gajis_schema.dump(gaji).data
-
         return {"status": 'success', 'data': result}, 201
